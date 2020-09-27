@@ -1,13 +1,12 @@
 package acceptance;
 
-import com.wealcome.testbdd.domain.*;
+import com.wealcome.testbdd.domain.Booking;
+import com.wealcome.testbdd.domain.Customer;
+import com.wealcome.testbdd.domain.Travel;
+import com.wealcome.testbdd.domain.VTC;
 import com.wealcome.testbdd.domain.gateways.AuthenticationGateway;
-import com.wealcome.testbdd.domain.repositories.BalanceAlertRepository;
-import com.wealcome.testbdd.domain.repositories.BookingRepository;
-import com.wealcome.testbdd.domain.repositories.CustomerAccountRepository;
-import com.wealcome.testbdd.domain.repositories.VTCRepository;
+import com.wealcome.testbdd.domain.repositories.*;
 import com.wealcome.testbdd.usecases.BookVTC;
-import io.cucumber.java.PendingException;
 import io.cucumber.java8.En;
 
 import java.util.Set;
@@ -20,20 +19,22 @@ public class BookingSteps implements En {
                         BookingRepository bookingRepository,
                         CustomerAccountRepository customerAccountRepository,
                         AuthenticationGateway authenticationGateway,
-                        BalanceAlertRepository balanceAlertRepository) {
+                        BalanceAlertRepository balanceAlertRepository,
+                        AuthenticationAlertRepository authenticationAlertRepository) {
 
-        final BookVTC bookVTC = new BookVTC(customerAccountRepository, bookingRepository, balanceAlertRepository, authenticationGateway);
+        final BookVTC bookVTC = new BookVTC(customerAccountRepository, bookingRepository, balanceAlertRepository, authenticationAlertRepository, authenticationGateway);
         BookingAttempt bookingAttempt = new BookingAttempt();
 
         When("^je tente de réserver le VTC \"([^\"]*)\" de \"([^\"]*)\" à \"([^\"]*)\"$",
                 (String firstName, String startPoint, String destinationPoint) -> {
                     for (VTC vtc : vtcRepository.all()) {
                         if (vtc.getFirstName().equals(firstName)) {
-                            bookVTC.handle(vtc, new Travel(startPoint, destinationPoint));
-                            bookingAttempt.setCustomer(authenticationGateway.currentCustomer().get());
-                            bookingAttempt.setVTC(vtc);
-                            bookingAttempt.setStartPoint(startPoint);
-                            bookingAttempt.setDestinationPoint(destinationPoint);
+                            if (bookVTC.handle(vtc, new Travel(startPoint, destinationPoint))) {
+                                bookingAttempt.setCustomer(authenticationGateway.currentCustomer().get());
+                                bookingAttempt.setVTC(vtc);
+                                bookingAttempt.setStartPoint(startPoint);
+                                bookingAttempt.setDestinationPoint(destinationPoint);
+                            }
                         }
                     }
                 });
@@ -50,11 +51,10 @@ public class BookingSteps implements En {
             assertEquals(0, bookings.size());
         });
         And("^et une alerte pour insuffisance de solde se lève$", () -> {
-            Set<BalanceAlert> alerts = balanceAlertRepository.all();
-            assertEquals(1, alerts.size());
+            assertEquals(1, balanceAlertRepository.all().size());
         });
         And("^et une alerte pour identification du client impossible se lève$", () -> {
-            throw new PendingException();
+            assertEquals(1, authenticationAlertRepository.all().size());
         });
     }
 

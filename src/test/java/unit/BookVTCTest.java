@@ -1,11 +1,9 @@
 package unit;
 
-import com.wealcome.testbdd.adapters.InMemoryAuthenticationGateway;
-import com.wealcome.testbdd.adapters.InMemoryBalanceAlertRepository;
-import com.wealcome.testbdd.adapters.InMemoryBookingRepository;
-import com.wealcome.testbdd.adapters.InMemoryCustomerAccountRepository;
+import com.wealcome.testbdd.adapters.*;
 import com.wealcome.testbdd.domain.*;
 import com.wealcome.testbdd.domain.gateways.AuthenticationGateway;
+import com.wealcome.testbdd.domain.repositories.AuthenticationAlertRepository;
 import com.wealcome.testbdd.domain.repositories.BalanceAlertRepository;
 import com.wealcome.testbdd.domain.repositories.BookingRepository;
 import com.wealcome.testbdd.domain.repositories.CustomerAccountRepository;
@@ -29,6 +27,7 @@ public class BookVTCTest {
     private final CustomerAccountRepository customerAccountRepository = new InMemoryCustomerAccountRepository();
     private final AuthenticationGateway authenticationGateway = new InMemoryAuthenticationGateway();
     private final BalanceAlertRepository balanceAlertRepository = new InMemoryBalanceAlertRepository();
+    private final AuthenticationAlertRepository authenticationAlertRepository = new InMemoryAuthenticationAlertRepository();
     private final VTC marcVTC = new VTC("abc", "Marc", "DUPUIS");
     private final Customer jeanMichelCustomer = new Customer("def", "Jean-Michel", "DUPONT");
     private final Customer patrickCustomer = new Customer("ghi", "Patrick", "Thomas");
@@ -123,7 +122,7 @@ public class BookVTCTest {
     }
 
     private void bookVTC(VTC vtc, Travel travel) {
-        new BookVTC(customerAccountRepository, bookingRepository, balanceAlertRepository, authenticationGateway).handle(vtc, travel);
+        new BookVTC(customerAccountRepository, bookingRepository, balanceAlertRepository, authenticationAlertRepository, authenticationGateway).handle(vtc, travel);
     }
 
     private void initCustomerAccount(Customer customer, int balance, int creditNote) {

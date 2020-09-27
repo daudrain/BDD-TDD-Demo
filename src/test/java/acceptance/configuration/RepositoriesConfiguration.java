@@ -2,9 +2,7 @@ package acceptance.configuration;
 
 import com.wealcome.testbdd.adapters.*;
 import com.wealcome.testbdd.domain.repositories.*;
-import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -41,4 +39,9 @@ public class RepositoriesConfiguration {
         return new InMemoryBalanceAlertRepository();
     }
 
+    @Bean
+    @Scope("cucumber-glue")
+    public AuthenticationAlertRepository authenticationAlertRepository() {
+        return new InMemoryAuthenticationAlertRepository();
+    }
 }
