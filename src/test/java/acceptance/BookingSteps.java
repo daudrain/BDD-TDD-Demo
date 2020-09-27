@@ -1,16 +1,14 @@
 package acceptance;
 
-import com.wealcome.testbdd.domain.Booking;
-import com.wealcome.testbdd.domain.Customer;
-import com.wealcome.testbdd.domain.Travel;
-import com.wealcome.testbdd.domain.VTC;
+import com.wealcome.testbdd.domain.*;
 import com.wealcome.testbdd.domain.gateways.AuthenticationGateway;
+import com.wealcome.testbdd.domain.repositories.BalanceAlertRepository;
 import com.wealcome.testbdd.domain.repositories.BookingRepository;
 import com.wealcome.testbdd.domain.repositories.CustomerAccountRepository;
 import com.wealcome.testbdd.domain.repositories.VTCRepository;
 import com.wealcome.testbdd.usecases.BookVTC;
-import cucumber.api.PendingException;
-import cucumber.api.java8.En;
+import io.cucumber.java.PendingException;
+import io.cucumber.java8.En;
 
 import java.util.Set;
 
@@ -21,7 +19,8 @@ public class BookingSteps implements En {
     public BookingSteps(VTCRepository vtcRepository,
                         BookingRepository bookingRepository,
                         CustomerAccountRepository customerAccountRepository,
-                        AuthenticationGateway authenticationGateway) {
+                        AuthenticationGateway authenticationGateway,
+                        BalanceAlertRepository balanceAlertRepository) {
 
         final BookVTC bookVTC = new BookVTC(customerAccountRepository, bookingRepository, authenticationGateway);
         BookingAttempt bookingAttempt = new BookingAttempt();
@@ -45,10 +44,12 @@ public class BookingSteps implements En {
         });
 
         Then("^la réservation n'est pas effective$", () -> {
-            throw new PendingException();
+            Set<Booking> bookings = bookingRepository.all();
+            assertEquals(0, bookings.size());
         });
         And("^et une alerte pour insuffisance de solde se lève$", () -> {
-            throw new PendingException();
+            Set<BalanceAlert> alerts = balanceAlertRepository.all();
+            assertEquals(0, alerts.size());
         });
         And("^et une alerte pour identification du client impossible se lève$", () -> {
             throw new PendingException();

@@ -1,18 +1,14 @@
 package acceptance.configuration;
 
-import com.wealcome.testbdd.adapters.InMemoryBookingRepository;
-import com.wealcome.testbdd.adapters.InMemoryCustomerAccountRepository;
-import com.wealcome.testbdd.adapters.InMemoryCustomerRepository;
-import com.wealcome.testbdd.adapters.InMemoryVTCRepository;
-import com.wealcome.testbdd.domain.repositories.BookingRepository;
-import com.wealcome.testbdd.domain.repositories.CustomerAccountRepository;
-import com.wealcome.testbdd.domain.repositories.CustomerRepository;
-import com.wealcome.testbdd.domain.repositories.VTCRepository;
+import com.wealcome.testbdd.adapters.*;
+import com.wealcome.testbdd.domain.repositories.*;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.test.context.ContextConfiguration;
 
-@Configuration
+@ContextConfiguration
 public class RepositoriesConfiguration {
 
     @Bean
@@ -39,5 +35,10 @@ public class RepositoriesConfiguration {
         return new InMemoryBookingRepository();
     }
 
+    @Bean
+    @Scope("cucumber-glue")
+    public BalanceAlertRepository balanceAlertRepository() {
+        return new InMemoryBalanceAlertRepository();
+    }
 
 }

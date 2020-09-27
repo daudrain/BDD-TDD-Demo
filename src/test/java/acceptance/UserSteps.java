@@ -3,8 +3,8 @@ package acceptance;
 import com.wealcome.testbdd.domain.gateways.AuthenticationGateway;
 import com.wealcome.testbdd.domain.Customer;
 import com.wealcome.testbdd.domain.repositories.CustomerRepository;
-import cucumber.api.PendingException;
-import cucumber.api.java8.En;
+import io.cucumber.java.PendingException;
+import io.cucumber.java8.En;
 
 import java.util.Optional;
 

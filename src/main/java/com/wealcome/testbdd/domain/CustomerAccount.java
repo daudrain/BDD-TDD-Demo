@@ -44,9 +44,11 @@ public class CustomerAccount {
                 '}';
     }
 
-    public void charge(ChargeStrategy chargeStrategy) {
+    public boolean charge(ChargeStrategy chargeStrategy) {
         Charge charge = chargeStrategy.charge(creditNote);
+        if (charge.getDebit().compareTo(balance) > 0) return false;
         balance = balance.subtract(charge.getDebit());
         creditNote = creditNote.subtract(charge.getConsumedCreditNote());
+        return true;
     }
 }

@@ -41,4 +41,12 @@ public final class Travel {
     private boolean isEnteringParis() {
         return !LocationDetection.isWithinParis(startPoint) && LocationDetection.isWithinParis(destinationPoint);
     }
+
+    @Override
+    public String toString() {
+        return "Travel{" +
+                "startPoint='" + startPoint + '\'' +
+                ", destinationPoint='" + destinationPoint + '\'' +
+                '}';
+    }
 }

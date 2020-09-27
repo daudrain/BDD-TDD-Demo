@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(HierarchicalContextRunner.class)
 public class BookVTCTest {
@@ -34,6 +35,7 @@ public class BookVTCTest {
     @Test
     public void shouldManageToBookAVTC() {
         authenticationGateway.authenticate(jeanMichelCustomer);
+        initCustomerAccount(jeanMichelCustomer, 30, 0);
         assertCanBookAVTC(marcVTC, new Travel(ARCHEREAU_PARIS, CLISSON_PARIS));
     }
 
@@ -112,6 +114,22 @@ public class BookVTCTest {
             initCustomerAccount(patrickCustomer, 50, 10);
             bookVTC(marcVTC, new Travel(VICTOR_HUGO_AUBERVILLIERS, ARCHEREAU_PARIS));
             assertThatCustomerAccountIsChargedUponBooking(customerAccount(patrickCustomer, 50, 10));
+        }
+
+    }
+
+    public class InsufficientBalanceCredit {
+
+        public class IntraMural {
+            @Test
+            public void noBookingIfInsufficientBalanceCredit() {
+
+                authenticationGateway.authenticate(patrickCustomer);
+                initCustomerAccount(patrickCustomer, 10, 10);
+                bookVTC(marcVTC, new Travel(CLISSON_PARIS, ARCHEREAU_PARIS));
+                assertTrue(bookingRepository.all().isEmpty());
+                //assertThatCustomerAccountIsChargedUponBooking(customerAccount(patrickCustomer, 10, 10));
+            }
         }
 
     }
