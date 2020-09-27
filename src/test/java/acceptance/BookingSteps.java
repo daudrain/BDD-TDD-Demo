@@ -22,18 +22,20 @@ public class BookingSteps implements En {
                         AuthenticationGateway authenticationGateway,
                         BalanceAlertRepository balanceAlertRepository) {
 
-        final BookVTC bookVTC = new BookVTC(customerAccountRepository, bookingRepository, authenticationGateway);
+        final BookVTC bookVTC = new BookVTC(customerAccountRepository, bookingRepository, balanceAlertRepository, authenticationGateway);
         BookingAttempt bookingAttempt = new BookingAttempt();
 
         When("^je tente de réserver le VTC \"([^\"]*)\" de \"([^\"]*)\" à \"([^\"]*)\"$",
                 (String firstName, String startPoint, String destinationPoint) -> {
-                    vtcRepository.all().stream().filter(vtc -> vtc.getFirstName().equals(firstName)).forEach(vtc -> {
-                        bookVTC.handle(vtc, new Travel(startPoint, destinationPoint));
-                        bookingAttempt.setCustomer(authenticationGateway.currentCustomer().get());
-                        bookingAttempt.setVTC(vtc);
-                        bookingAttempt.setStartPoint(startPoint);
-                        bookingAttempt.setDestinationPoint(destinationPoint);
-                    });
+                    for (VTC vtc : vtcRepository.all()) {
+                        if (vtc.getFirstName().equals(firstName)) {
+                            bookVTC.handle(vtc, new Travel(startPoint, destinationPoint));
+                            bookingAttempt.setCustomer(authenticationGateway.currentCustomer().get());
+                            bookingAttempt.setVTC(vtc);
+                            bookingAttempt.setStartPoint(startPoint);
+                            bookingAttempt.setDestinationPoint(destinationPoint);
+                        }
+                    }
                 });
 
         Then("^la réservation est effective$", () -> {
@@ -49,7 +51,7 @@ public class BookingSteps implements En {
         });
         And("^et une alerte pour insuffisance de solde se lève$", () -> {
             Set<BalanceAlert> alerts = balanceAlertRepository.all();
-            assertEquals(0, alerts.size());
+            assertEquals(1, alerts.size());
         });
         And("^et une alerte pour identification du client impossible se lève$", () -> {
             throw new PendingException();

@@ -1,5 +1,8 @@
 # BDD-TDD-Demo-3
-Source code of this video: https://www.youtube.com/watch?v=rYX51DaJifw
+Code source pour ces vidéos:
+* [Partie 1](https://www.youtube.com/watch?v=rYX51DaJifw)
+* [Partie 2](https://www.youtube.com/watch?v=CMjy7csMMko)
+* [Partie 3](https://www.youtube.com/watch?v=HbF4MAr0kk8)
 
 ## Spécifications
 Une personne de plus de 18 ans veut réserver un VTC.

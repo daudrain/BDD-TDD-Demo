@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class InMemoryBalanceAlertRepository implements BalanceAlertRepository {
-    private Set<BalanceAlert> alerts = new LinkedHashSet<>();
+    private final Set<BalanceAlert> alerts = new LinkedHashSet<>();
     @Override
     public Set<BalanceAlert> all() {
         return alerts;
@@ -15,6 +15,6 @@ public class InMemoryBalanceAlertRepository implements BalanceAlertRepository {
 
     @Override
     public void add(BalanceAlert alert) {
-
+        alerts.add(alert);
     }
 }
